@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <link rel="stylesheet" href="styles6.css">
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="btn" data-value="7">7</button>
+            <button class="btn" data-value="8">8</button>
+            <button class="btn" data-value="9">9</button>
+            <button class="btn operator" data-value="/">/</button>
+
+            <button class="btn" data-value="4">4</button>
+            <button class="btn" data-value="5">5</button>
+            <button class="btn" data-value="6">6</button>
+            <button class="btn operator" data-value="*">*</button>
+
+            <button class="btn" data-value="1">1</button>
+            <button class="btn" data-value="2">2</button>
+            <button class="btn" data-value="3">3</button>
+            <button class="btn operator" data-value="-">-</button>
+
+            <button class="btn" data-value="0">0</button>
+            <button class="btn" data-value=".">.</button>
+            <button class="btn operator" data-value="=">=</button>
+            <button class="btn operator" data-value="+">+</button>
+
+            <button class="btn" id="clear">C</button>
+        </div>
+    </div>
+    <script src="code.js"></script>
+</body>
+</html>
+#css
+/* styles.css */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+.calculator {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 300px;
+}
+
+.display {
+    background-color: #222;
+    color: #fff;
+    font-size: 2em;
+    padding: 20px;
+    text-align: right;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+}
+
+.btn {
+    background-color: #e0e0e0;
+    border: none;
+    font-size: 1.5em;
+    padding: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #d0d0d0;
+}
+
+.operator {
+    background-color: #f9a825;
+    color: #fff;
+}
+
+.operator:hover {
+    background-color: #f57f17;
+}
+
+#clear {
+    grid-column: span 4;
+    background-color: #e53935;
+    color: #fff;
+}
+
+#clear:hover {
+    background-color: #d32f2f;
+}
+#js
+// script.js
+document.addEventListener("DOMContentLoaded", function () {
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('.btn');
+    let currentInput = '';
+    let operator = '';
+    let previousInput = '';
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+
+            if (value === 'C') {
+                currentInput = '';
+                operator = '';
+                previousInput = '';
+                display.innerText = '0';
+            } else if (value === '=') {
+                if (currentInput && previousInput && operator) {
+                    currentInput = evaluate(previousInput, operator, currentInput).toString();
+                    display.innerText = currentInput;
+                    operator = '';
+                    previousInput = '';
+                }
+            } else if (['+', '-', '*', '/'].includes(value)) {
+                if (currentInput) {
+                    operator = value;
+                    previousInput = currentInput;
+                    currentInput = '';
+                }
+            } else {
+                currentInput += value;
+                display.innerText = currentInput;
+            }
+        });
+    });
+
+    function evaluate(num1, operator, num2) {
+        const a = parseFloat(num1);
+        const b = parseFloat(num2);
+        switch (operator) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': return a / b;
+            default: return 0;
+        }
+    }
+});
